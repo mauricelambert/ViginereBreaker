@@ -1,0 +1,12 @@
+LICENSE.txt
+MANIFEST.in
+README.md
+ViginereBreaker.py
+cipher.txt
+setup.py
+test_viginere_breaker.py
+text.txt
+ViginereBreaker.egg-info/PKG-INFO
+ViginereBreaker.egg-info/SOURCES.txt
+ViginereBreaker.egg-info/dependency_links.txt
+ViginereBreaker.egg-info/top_level.txt

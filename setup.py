@@ -16,6 +16,7 @@ setup(
     url=package.__url__,
     project_urls={
         "Documentation": "https://mauricelambert.github.io/info/python/security/ViginereBreaker.html",
+        "Executable": "https://mauricelambert.github.io/info/python/security/ViginereBreaker.pyz",
     },
     classifiers=[
         "Programming Language :: Python",

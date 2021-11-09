@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: ViginereBreaker
-Version: 0.0.2
-Summary: This file implements a viginere breaker.
+Version: 0.0.3
+Summary:  This package implements a viginere breaker. 
 Home-page: https://github.com/mauricelambert/ViginereBreaker
 Author: Maurice Lambert
 Author-email: mauricelambert434@gmail.com
@@ -9,6 +9,7 @@ Maintainer: Maurice Lambert
 Maintainer-email: mauricelambert434@gmail.com
 License: GPL-3.0 License
 Project-URL: Documentation, https://mauricelambert.github.io/info/python/security/ViginereBreaker.html
+Project-URL: Executable, https://mauricelambert.github.io/info/python/security/ViginereBreaker.pyz
 Keywords: Viginere,ViginereBreaker,Decryptor,Breaker
 Platform: Windows
 Platform: Linux
@@ -31,7 +32,7 @@ License-File: LICENSE.txt
 
 ## Description
 
-This file implements a viginere breaker.
+This package implements a viginere breaker.
 
 ## Requirements
 

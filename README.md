@@ -4,7 +4,7 @@
 
 ## Description
 
-This file implements a viginere breaker.
+This package implements a viginere breaker.
 
 ## Requirements
 

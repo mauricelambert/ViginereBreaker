@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 ###################
-#    This file implements a viginere breaker.
+#    This package implements a viginere breaker.
 #    Copyright (C) 2021  Maurice Lambert
 
 #    This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 ###################
 
 """
-This file implements a viginere breaker.
+This package implements a viginere breaker.
 
 >>> c = ViginereBreaker("E" * 13 + "A" * 8 + "Z" * 79)
 >>> c.breaker()
@@ -36,12 +36,14 @@ Command line:
 [["T"], ["E"], ["S"], ["T"]]
 """
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
 __maintainer_email__ = "mauricelambert434@gmail.com"
-__description__ = """This file implements a viginere breaker."""
+__description__ = """
+This package implements a viginere breaker.
+"""
 license = "GPL-3.0 License"
 __url__ = "https://github.com/mauricelambert/ViginereBreaker"
 

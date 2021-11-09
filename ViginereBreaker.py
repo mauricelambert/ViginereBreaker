@@ -26,10 +26,17 @@ This file implements a viginere breaker.
 >>> c.breaker()
 [['A']]
 
+Tests:
 ~# python3 -m doctest -v ViginereBreaker.py
+
+Command line:
+~# python3 ViginereBreaker.py cipher.txt
+{"4": [["T"], ["E"], ["S"], ["T"]], "12": [["T"], ["E"], ["S"], ["T"], ["T"], ["E"], ["S"], ["T"], ["T"], ["E"], ["S"], ["T"]]}
+~# python3 ViginereBreaker.py cipher.txt -k 4 -a "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -s "{\\"E\\":10,\\"A\\":7}"
+[["T"], ["E"], ["S"], ["T"]]
 """
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -49,11 +56,14 @@ __copyright__ = copyright
 
 __all__ = ["ViginereBreaker"]
 
+from argparse import ArgumentParser, FileType
 from typing import Union, Dict, Any, Tuple
 from collections.abc import Iterable
 from string import ascii_uppercase
 from collections import Counter
 from math import sqrt
+import json
+import sys
 
 
 class ViginereBreaker:
@@ -223,3 +233,58 @@ decipher data (for exemple if data is English text statistics\
             first = False
 
         return match_
+
+
+def main() -> None:
+
+    """
+    This function execute this file from the command line.
+    """
+
+    parser = ArgumentParser(description="This package can break a viginere cipher.")
+    parser.add_argument(
+        "inputfile",
+        help="File where data are encrypted with viginere.",
+        type=FileType("r"),
+    )
+    parser.add_argument(
+        "--key-length", "-k", type=int, help="The length of the key if you know it."
+    )
+    parser.add_argument(
+        "--alphabet",
+        "-a",
+        help="Ordered characters used in the encryption / decryption algorithm.",
+        default=ascii_uppercase,
+    )
+    parser.add_argument(
+        "--statistics",
+        "-s",
+        type=json.loads,
+        help="JSON object with characters as key and pourcent of occcurence as value.",
+        default={"E": 11, "A": 7},
+    )
+    arguments = parser.parse_args()
+
+    if (
+        not isinstance(arguments.statistics, dict)
+        or not all(isinstance(k, str) for k in arguments.statistics.keys())
+        or not all(isinstance(v, int) for v in arguments.statistics.values())
+    ):
+        parser.print_usage()
+        print(
+            f": error: argument statistics: invalid Dict[str, int] value: {arguments.statistics}"
+        )
+        sys.exit(1)
+
+    breaker = ViginereBreaker(
+        arguments.inputfile.read(),
+        arguments.key_length,
+        arguments.statistics,
+        arguments.alphabet,
+    )
+    print(json.dumps(breaker.breaker()))
+
+
+if __name__ == "__main__":
+    main()
+    sys.exit(0)

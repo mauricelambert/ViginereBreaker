@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: ViginereBreaker
-Version: 0.0.1
+Version: 0.0.2
 Summary: This file implements a viginere breaker.
 Home-page: https://github.com/mauricelambert/ViginereBreaker
 Author: Maurice Lambert
@@ -45,6 +45,29 @@ pip install ViginereBreaker
 ```
 
 ## Usages
+
+### Command line
+
+#### Module
+
+```bash
+python3 -m ViginereBreaker cipher.txt
+```
+
+#### Python executable
+
+```bash
+python3 ViginereBreaker.pyz cipher.txt
+```
+
+#### Command
+
+##### Basic
+
+```bash
+ViginereBreaker cipher.txt
+ViginereBreaker cipher.txt -k 4 -a "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -s "{\"E\":10,\"A\":7}"
+```
 
 ### Python script
 

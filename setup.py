@@ -5,7 +5,7 @@ setup(
     name=package.__name__,
     version=package.__version__,
     py_modules=[package.__name__],
-    install_requires = [],
+    install_requires=[],
     author=package.__author__,
     author_email=package.__author_email__,
     maintainer=package.__maintainer__,
@@ -14,10 +14,10 @@ setup(
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url=package.__url__,
-    project_urls = {
+    project_urls={
         "Documentation": "https://mauricelambert.github.io/info/python/security/ViginereBreaker.html",
     },
-    classifiers = [
+    classifiers=[
         "Programming Language :: Python",
         "Development Status :: 5 - Production/Stable",
         "Topic :: Security :: Cryptography",
@@ -27,7 +27,7 @@ setup(
         "Operating System :: Microsoft :: Windows",
         "Operating System :: MacOS",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     keywords=[
         "Viginere",
         "ViginereBreaker",

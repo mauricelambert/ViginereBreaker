@@ -19,6 +19,29 @@ pip install ViginereBreaker
 
 ## Usages
 
+### Command line
+
+#### Module
+
+```bash
+python3 -m ViginereBreaker cipher.txt
+```
+
+#### Python executable
+
+```bash
+python3 ViginereBreaker.pyz cipher.txt
+```
+
+#### Command
+
+##### Basic
+
+```bash
+ViginereBreaker cipher.txt
+ViginereBreaker cipher.txt -k 4 -a "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -s "{\"E\":10,\"A\":7}"
+```
+
 ### Python script
 
 ```python

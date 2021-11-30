@@ -96,6 +96,7 @@ Using CustomCrypto:
  - [Github Page](https://github.com/mauricelambert/ViginereBreaker/)
  - [Documentation](https://mauricelambert.github.io/info/python/security/ViginereBreaker.html)
  - [Pypi package](https://pypi.org/project/ViginereBreaker/)
+ - [Executable](https://mauricelambert.github.io/info/python/security/ViginereBreaker.pyz)
 
 ## Licence
 

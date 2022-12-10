@@ -19,10 +19,19 @@
 #    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 ###################
 
-"""
+r"""
 This package implements a viginere breaker.
 
 >>> c = ViginereBreaker("E" * 13 + "A" * 8 + "Z" * 79)
+>>> c.breaker()
+{1: [['a']], 2: [['a'], ['a']]}
+>>> c = ViginereBreaker(
+...     "E" * 13 + "A" * 8 + "Z" * 79,
+...     1,
+...     {"E": 13, "A": 8},
+...     "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+...     True,
+... )
 >>> c.breaker()
 [['A']]
 
@@ -31,12 +40,18 @@ Tests:
 
 Command line:
 ~# python3 ViginereBreaker.py cipher.txt
-{"4": [["T"], ["E"], ["S"], ["T"]], "12": [["T"], ["E"], ["S"], ["T"], ["T"], ["E"], ["S"], ["T"], ["T"], ["E"], ["S"], ["T"]]}
-~# python3 ViginereBreaker.py cipher.txt -k 4 -a "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -s "{\\"E\\":10,\\"A\\":7}"
+{"4": [["t"], ["e"], ["s"], ["t"]], "12": [["t"], ["e"], ["s"], ["t"], ["t"], ["e"], ["s"], ["t"], ["t"], ["e"], ["s"], ["t"]]}
+~# python3 ViginereBreaker.py cipher.txt -k 4 -a "ABCDEFGHIJKLMNOPQRSTUVWXYZ" -c -s "{\"E\":10,\"A\":7}"
 [["T"], ["E"], ["S"], ["T"]]
+
+Tests:
+~# python3 -m doctest -v ViginereBreaker.py
+18 tests in 9 items.
+18 passed and 0 failed.
+Test passed.
 """
 
-__version__ = "0.0.3"
+__version__ = "0.1.0"
 __author__ = "Maurice Lambert"
 __author_email__ = "mauricelambert434@gmail.com"
 __maintainer__ = "Maurice Lambert"
@@ -60,12 +75,12 @@ __all__ = ["ViginereBreaker"]
 
 from argparse import ArgumentParser, FileType
 from typing import Union, Dict, Any, Tuple
+from sys import exit, stdout, stderr
 from collections.abc import Iterable
 from string import ascii_uppercase
 from collections import Counter
+from json import loads, dump
 from math import sqrt
-import json
-import sys
 
 
 class ViginereBreaker:
@@ -82,9 +97,19 @@ decipher data (for exemple if data is English text statistics\
 	alphabet: characters to decipher (for example \
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
+    >>> c = ViginereBreaker(
+    ...     "DATA",
+    ...     key_length=1,
+    ...     statistics={"E": 13},
+    ...     alphabet="e",
+    ...     case_sensitive=True,
+    ... )
+    Traceback (most recent call last):
+        ...
+    ValueError: All of statistics characters (['E']) are not in alphabet: 'e'
 	>>> c = ViginereBreaker("E" * 13 + "A" * 8 + "Z" * 79)
 	>>> c.breaker()
-	[['A']]
+	{1: [['a']], 2: [['a'], ['a']]}
 	"""
 
     def __init__(
@@ -93,11 +118,23 @@ decipher data (for exemple if data is English text statistics\
         key_length: int = None,
         statistics: Dict[Any, float] = {"E": 13, "A": 8},
         alphabet: Iterable[Any] = ascii_uppercase,
+        case_sensitive: bool = False,
     ):
-        self.data = data
         self.key_length = key_length
-        self.statistics = statistics
-        self.alphabet = alphabet
+        if case_sensitive:
+            self.data = data
+            self.statistics = statistics
+            self.alphabet = alphabet
+        else:
+            self.data = data.casefold()
+            self.statistics = {k.casefold():v for k, v in statistics.items()}
+            self.alphabet = alphabet.casefold()
+
+        if not all(x in alphabet for x in statistics):
+            raise ValueError(
+                f"All of statistics characters ({[x for x in statistics]})"
+                f" are not in alphabet: {alphabet!r}"
+            )
 
     def breaker(self) -> Iterable[Any]:
 
@@ -106,10 +143,10 @@ decipher data (for exemple if data is English text statistics\
 
         >>> c = ViginereBreaker("E" * 13 + "A" * 8 + "Z" * 79)
         >>> c.breaker()
-        [['A']]
-        >>> c = ViginereBreaker("E" * 13 + "A" * 8 + "Z" * 79, 0)
+        {1: [['a']], 2: [['a'], ['a']]}
+        >>> c = ViginereBreaker("E" * 13 + "A" * 8 + "Z" * 79, 1)
         >>> c.breaker()
-        [['A']]
+        [['a']]
         """
 
         if self.key_length:
@@ -138,7 +175,7 @@ decipher data (for exemple if data is English text statistics\
         """
         This function search the key.
 
-        >>> ViginereBreaker.found_chars_keys("E" * 13 + "A" * 8 + "Z" * 79, 0, {"E": 13, "A": 8}, ascii_uppercase)
+        >>> ViginereBreaker.found_chars_keys("E" * 13 + "A" * 8 + "Z" * 79, 1, {"E": 13, "A": 8}, ascii_uppercase)
         [['A']]
         """
 
@@ -175,11 +212,20 @@ decipher data (for exemple if data is English text statistics\
         """
         This function return character statistics.
 
+        >>> ViginereBreaker.get_statistics({"a": 0}, "A")
+        Traceback (most recent call last):
+            ...
+        ValueError: Data characters are not in alphabet: 'A'
         >>> ViginereBreaker.get_statistics({"A": 1}, "A")
-        {"A": 100}
+        {'A': 100.0}
         """
 
         caesar_length = sum(counter.values())
+
+        if not caesar_length:
+            raise ValueError(
+                f"Data characters are not in alphabet: {alphabet!r}"
+            )
 
         for char in alphabet:
             counter[char] = counter[char] * 100 / caesar_length
@@ -237,7 +283,7 @@ decipher data (for exemple if data is English text statistics\
         return match_
 
 
-def main() -> None:
+def main() -> int:
 
     """
     This function execute this file from the command line.
@@ -261,9 +307,17 @@ def main() -> None:
     parser.add_argument(
         "--statistics",
         "-s",
-        type=json.loads,
+        type=loads,
         help="JSON object with characters as key and pourcent of occcurence as value.",
         default={"E": 11, "A": 7},
+    )
+    parser.add_argument(
+        "--case-sensitive",
+        "--sensitive",
+        "-c",
+        help="Case sensitive data, alphabet and statistics.",
+        default=False,
+        action="store_true",
     )
     arguments = parser.parse_args()
 
@@ -274,19 +328,22 @@ def main() -> None:
     ):
         parser.print_usage()
         print(
-            f": error: argument statistics: invalid Dict[str, int] value: {arguments.statistics}"
+            f": error: argument statistics: invalid Dict[str, int] value: {arguments.statistics}",
+            file=stderr
         )
-        sys.exit(1)
+        return 1
 
     breaker = ViginereBreaker(
         arguments.inputfile.read(),
         arguments.key_length,
         arguments.statistics,
         arguments.alphabet,
+        arguments.case_sensitive,
     )
-    print(json.dumps(breaker.breaker()))
+    dump(breaker.breaker(), stdout)
+
+    return 0
 
 
 if __name__ == "__main__":
-    main()
-    sys.exit(0)
+    exit(main())
